@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-tmp/
+*.local
+.DS_Store
+.vite/
+.preview/
+dist-*/
+.cache-e2e/
+
+# Pure Core 构建产物（可重建，不入库；但 supabase/_shared/core.js 由 CI 强制入库存证）
+packages/core/dist/

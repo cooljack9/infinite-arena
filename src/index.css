@@ -1,0 +1,388 @@
+:root {
+  --bg: #14101a;
+  --panel: #221a2e;
+  --panel2: #2c2238;
+  --text: #f0e8ff;
+  --muted: #9a8fb0;
+  --accent: #ffcc4d;
+  --danger: #ff4a4a;
+  --ok: #4ad27a;
+  --ally: #4aa3ff;
+  --enemy: #ff4a4a;
+
+  /* v1.6 品质色（美术升级 A.8）：稀有度是这个游戏最高频的信息，
+     此前散落在各组件的内联字符串里，改一次要翻 5 个文件。集中到这里。 */
+  --q-normal: #b9b4c6;
+  --q-blue:   #56a8ff;
+  --q-orange: #ff9a3f;
+  --q-red:    #ff5f6d;
+  --line: #3a2e4a;
+  --line2: #4a3a5a;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-monospace, "Courier New", monospace;
+}
+
+/* 背景层次：径向暖光 + 极淡扫描线。
+   纯色 #14101a 的大平面会让所有面板都"贴"在同一深度上；
+   加一层几乎看不见的纹理，UI 才有前后关系。用 fixed 伪元素，零布局成本。 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1100px 620px at 50% -12%, rgba(255, 204, 77, 0.07), transparent 62%),
+    radial-gradient(820px 520px at 12% 108%, rgba(74, 163, 255, 0.06), transparent 60%),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.014) 0 1px,
+      transparent 1px 3px
+    );
+}
+#root { position: relative; z-index: 1; }
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+#root {
+  width: 100%;
+  max-width: 760px;
+  padding: 16px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.panel {
+  /* 顶部微亮的竖向渐变 + 1px 内高光：模拟一块被上方光源照到的面板。
+     这是让扁平深色 UI 显出"材质"的最低成本做法 */
+  background: linear-gradient(180deg, #261d33 0%, var(--panel) 46%, #1d1628 100%);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  width: 100%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 28px rgba(0, 0, 0, 0.42);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-align: center;
+  text-shadow: 0 0 14px rgba(255, 204, 77, 0.34);
+}
+
+.subtitle { color: var(--muted); text-align: center; font-size: 13px; }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: linear-gradient(180deg, #352a44 0%, var(--panel2) 100%);
+  color: var(--text);
+  border: 2px solid var(--line2);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition: transform .05s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #45374f 0%, #362a46 100%);
+  border-color: #6a5580;
+}
+button:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4); }
+button:disabled { opacity: .38; cursor: not-allowed; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+button.primary {
+  background: linear-gradient(180deg, #ffdc7a 0%, var(--accent) 60%, #e6a92e 100%);
+  color: #1a1410;
+  border-color: #ffe3a0;
+  font-weight: bold;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 14px rgba(255, 204, 77, 0.26);
+}
+button.primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #ffe9a4 0%, #ffd45f 60%, #f0b53a 100%);
+  border-color: #fff0c4;
+}
+button.danger { border-color: var(--danger); color: var(--danger); }
+button.ghost {
+  background: transparent; border-color: var(--line2); color: var(--muted);
+  box-shadow: none;
+}
+button.ghost:hover:not(:disabled) { background: rgba(255,255,255,0.04); border-color: #6a5580; color: var(--text); }
+
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.center { justify-content: center; align-items: center; }
+.between { justify-content: space-between; }
+
+.chip {
+  padding: 4px 8px; border-radius: 5px; font-size: 12px;
+  border: 1px solid var(--line2); background: #1a1422;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.tag { font-size: 11px; color: var(--muted); }
+
+.grid-heroes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.hero-card {
+  border: 2px solid var(--line2); border-radius: 8px; padding: 8px; cursor: pointer;
+  background: linear-gradient(180deg, #211a2c 0%, #1a1422 100%);
+  display: flex; flex-direction: column; gap: 4px;
+  transition: transform .1s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.hero-card:hover { transform: translateY(-2px); border-color: #6a5580; }
+.hero-card.sel {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, #332745 0%, #251c33 100%);
+  box-shadow: 0 0 0 1px rgba(255, 204, 77, 0.35), 0 0 18px rgba(255, 204, 77, 0.20);
+}
+.hero-name { font-weight: bold; font-size: 13px; }
+.hero-cat { font-size: 11px; color: var(--muted); }
+
+.hud {
+  display: flex; justify-content: space-between; align-items: center;
+  width: 480px; max-width: 100%; font-size: 13px;
+}
+.skillbar { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.skill-btn { position: relative; padding: 6px 10px; font-size: 12px; min-width: 70px; }
+.skill-cd {
+  position: absolute; inset: 0; background: rgba(0,0,0,.6);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 3px; font-size: 12px; color: #fff;
+}
+
+.battle-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+canvas {
+  image-rendering: pixelated;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: #0a0a12;
+  /* 竞技场是画面主体，给它一圈冷光把视线钉在这里 */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 12px 34px rgba(0, 0, 0, 0.55),
+              0 0 26px rgba(74, 163, 255, 0.10);
+  /* v2.9.3 地图铺满屏幕：宽取 min(视口宽96%, 视口高−战斗UI, 980px)，保持 20:13 比例，
+     pixelated 下放大依然清晰。此前只有窄屏 width:100%，桌面一直是 480px 小画布。 */
+  width: min(96vw, calc(100vh - 200px), 980px);
+  height: auto;
+  max-width: 100%;
+}
+
+.big-num { font-size: 30px; color: var(--accent); font-weight: bold; text-align: center; }
+.muted { color: var(--muted); }
+.ok { color: var(--ok); }
+.danger { color: var(--danger); }
+
+/* ══ v1.6 战斗倍速条（需求 2）════════════════════════════════
+   位置在画布正下方，跨关卡保持——所以它必须长得像一个"设置"，
+   而不是一个每局都要重按的临时按钮 */
+.speedbar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  width: 100%; max-width: 480px;
+  padding: 7px 10px;
+  border: 1px solid var(--line2); border-radius: 8px;
+  background: linear-gradient(180deg, rgba(44, 34, 56, 0.85), rgba(26, 20, 34, 0.85));
+}
+/* 暂停按钮：与倍速刻意区分配色——倍速是暖金（偏好设置），暂停是冷青（即时控制），
+   避免玩家在紧张战斗中误点。暂停生效时反色高亮，状态一眼可辨。 */
+.pause-btn {
+  padding: 4px 10px; font-size: 12px; font-weight: bold; letter-spacing: 1px;
+  border-radius: 6px; border: 1px solid #4aa3ff; background: #16202e; color: #9fd4ff;
+  cursor: pointer; white-space: nowrap; transition: background 0.12s, color 0.12s;
+}
+.pause-btn:hover:not(:disabled) { background: #1e2c40; }
+.pause-btn.paused { background: #4aa3ff; color: #0d1520; box-shadow: 0 0 10px rgba(74, 163, 255, 0.6); }
+.pause-btn:disabled { opacity: 0.4; cursor: default; }
+.speed-label { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+.speed-value { font-size: 13px; color: var(--accent); min-width: 40px; text-align: right; font-weight: bold; }
+.speed-range {
+  flex: 1; min-width: 110px; height: 4px; appearance: none;
+  background: linear-gradient(90deg, #4aa3ff, var(--accent));
+  border-radius: 3px; outline: none; cursor: pointer;
+}
+.speed-range::-webkit-slider-thumb {
+  appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: #fff5d6; border: 2px solid var(--accent); cursor: pointer;
+  box-shadow: 0 0 8px rgba(255, 204, 77, 0.7);
+}
+.speed-range::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff5d6; border: 2px solid var(--accent); cursor: pointer;
+}
+.speed-presets { display: flex; gap: 4px; flex-wrap: wrap; }
+.speed-chip {
+  padding: 3px 7px; font-size: 11px; min-width: 0;
+  border-radius: 5px; border: 1px solid var(--line2);
+  background: #1a1422; color: var(--muted);
+}
+.speed-chip.active {
+  border-color: var(--accent); color: #1a1410; font-weight: bold;
+  background: linear-gradient(180deg, #ffdc7a, var(--accent));
+}
+
+/* ══ v1.6 角色面板（需求 3）════════════════════════════════ */
+.hero-panel { animation: panelIn .16s ease-out; }
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(10px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 品质文字色工具类：装备名、词条、合成结果统一走这里 */
+.q-normal { color: var(--q-normal); }
+.q-blue   { color: var(--q-blue); }
+.q-orange { color: var(--q-orange); }
+.q-red    { color: var(--q-red); text-shadow: 0 0 8px rgba(255, 95, 109, 0.45); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ══ v2.0 移动端适配（需求文档 §5.4：手机竖屏可玩）═══════════════════════════
+   桌面端 .app 锁 760px，但窄屏要把内边距收掉、把英雄网格降到 2 列、
+   把按钮顶到 ≥44px 触控区、画布按视口宽度自适应，否则竖屏会横向溢出。 */
+@media (max-width: 560px) {
+  #root { padding: 8px; }
+  .app { padding: 10px; gap: 12px; }
+  .grid-heroes { grid-template-columns: repeat(2, 1fr); }
+  .hero-card { padding: 7px; }
+  .hud { font-size: 12px; }
+  .big-num { font-size: 24px; }
+  .speedbar { gap: 6px; padding: 6px 8px; }
+  .speed-range { min-width: 90px; }
+
+  /* 触控目标 ≥44px：所有主操作按钮在手机上加高，避免误触 */
+  button.primary, button.danger, button.ghost, .preset-apply, .preset-del, .skill-btn, .mode-btn {
+    min-height: 44px;
+  }
+  .skill-btn { min-width: 64px; font-size: 13px; }
+  .mode-btn { width: 100%; text-align: center; }
+
+  /* 画布按视口宽度缩放，杜绝横向滚动条（桌面已由 canvas 统一规则铺满） */
+  .battle-wrap { width: 100%; }
+
+  /* v2.9.10 结算页竖排：原 .eval-cols 是固定双列 flex，手机竖屏下两列各被压到
+     ~170px，而每行含 4 个 46px 数字列（造成/承受/治疗/移动）+ 角色名，
+     直接溢出列宽、名字被挤没。≤560px 改为上下堆叠，单列宽度足以放下整行。 */
+  .eval-cols { flex-direction: column; gap: 10px; }
+  .eval-col { width: 100%; }
+}
+
+/* 超窄屏（≤360px）进一步收紧：英雄网格保持 2 列但间距更小 */
+@media (max-width: 360px) {
+  .grid-heroes { gap: 6px; }
+  .hero-name { font-size: 12px; }
+  button.primary, button.danger, button.ghost { font-size: 13px; }
+}
+
+/* ══ v2.2 新手模式弹窗教学：云朵型气泡 + 指向箭头 ═══════════════════
+   容器（TutorialOverlay 内的 fixed 层）pointer-events:none，仅云朵本体可点，
+   玩家可在看教学的同时操作被指向的元素。left/top 由浮层按锚点 getBoundingClientRect
+   计算后内联写入；箭头（.tut-tail）三角形颜色与云朵底一致，避免接缝。 */
+.tut-cloud {
+  position: fixed;
+  background: #f4f7fd;
+  color: #2b2438;
+  border: 1px solid #d9e2f1;
+  border-radius: 22px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 12px 30px rgba(20, 16, 26, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  pointer-events: auto;
+  z-index: 401;
+  animation: tutIn .18s ease-out;
+}
+/* 顶部两个小鼓包，强化"云朵"观感（纯装饰，不参与箭头定位） */
+.tut-cloud::before,
+.tut-cloud::after {
+  content: '';
+  position: absolute;
+  background: #f4f7fd;
+  border: 1px solid #d9e2f1;
+  border-radius: 50%;
+  z-index: -1;
+}
+.tut-cloud::before { width: 46px; height: 46px; top: -16px; left: 26px; }
+.tut-cloud::after  { width: 30px; height: 30px; top: -12px; left: 70px; }
+@keyframes tutIn { from { opacity: 0; transform: translateY(6px) scale(.96); } to { opacity: 1; transform: none; } }
+.tut-tail { position: absolute; width: 0; height: 0; filter: drop-shadow(0 1px 1px rgba(20, 16, 26, 0.16)); }
+.tut-title { font-size: 14px; font-weight: 700; color: #5b3fb0; margin-bottom: 4px; }
+.tut-text { font-size: 12px; line-height: 1.55; color: #3a3350; }
+.tut-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.tut-count { font-size: 11px; color: #9a8fb0; }
+.tut-next {
+  font-family: inherit; cursor: pointer; pointer-events: auto;
+  background: linear-gradient(180deg, #ffdc7a 0%, #ffcc4d 60%, #e6a92e 100%);
+  color: #1a1410; border: 1px solid #ffe3a0; border-radius: 7px;
+  padding: 4px 12px; font-size: 12px; font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.tut-next:hover { background: linear-gradient(180deg, #ffe9a4 0%, #ffd45f 60%, #f0b53a 100%); }
+
+/* ── v2.9.6 战后评价屏 ── */
+.eval-panel { max-width: 920px; width: 100%; }
+.eval-result { font-size: 14px; margin-left: 10px; padding: 2px 10px; border-radius: 5px; }
+.eval-result.win  { color: #7ee08a; border: 1px solid #2f6b3a; background: rgba(126,224,138,0.10); }
+.eval-result.lose { color: #ff8a8a; border: 1px solid #6b2f2f; background: rgba(255,138,138,0.10); }
+.eval-mvp-banner {
+  margin-top: 6px; padding: 8px 12px; border-radius: 8px; font-size: 14px;
+  border: 1px solid #ffcc4d; background: rgba(255,204,77,0.10); color: #ffe2a0;
+}
+.eval-cols { display: flex; gap: 14px; margin-top: 8px; }
+.eval-col { flex: 1 1 0; min-width: 0; border: 1px solid var(--line2); border-radius: 10px; padding: 8px; background: rgba(255,255,255,0.02); }
+.eval-col.ally  { border-color: #2f6b8a; }
+.eval-col.enemy { border-color: #8a3a2f; }
+.eval-head { font-weight: 700; font-size: 14px; margin-bottom: 6px; text-align: center; color: var(--text); }
+.eval-row {
+  display: flex; align-items: center; gap: 6px; padding: 5px 6px; border-radius: 6px;
+  font-size: 12px;
+}
+.eval-row + .eval-row { border-top: 1px solid rgba(255,255,255,0.05); }
+.eval-row-head { color: var(--muted); font-size: 11px; border-top: none !important; }
+.eval-row.mvp { background: rgba(255,204,77,0.12); border: 1px solid #ffcc4d; }
+.eval-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.eval-crown { margin-right: 3px; }
+.eval-num { flex: 0 0 46px; text-align: right; font-variant-numeric: tabular-nums; }
+.eval-num.dmg   { color: #ffb15a; }
+.eval-num.taken { color: #ff7a7a; }
+.eval-num.heal  { color: #7ee08a; }
+.eval-num.move  { color: #7ad0ff; }
+.eval-empty { color: var(--muted); text-align: center; padding: 8px; font-size: 12px; }
+
+/* ── v3.2 动画：开箱 / 倒计时 / 融合 / 升星发光 ── */
+@keyframes chest-open {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50%      { transform: scale(1.12); filter: brightness(1.6); }
+}
+@keyframes countdown-pop {
+  0% { transform: scale(0.4); opacity: 0.3; }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes forge-redglow {
+  0%, 100% { box-shadow: 0 0 4px rgba(255, 60, 60, 0.4); }
+  50%      { box-shadow: 0 0 24px 6px rgba(255, 60, 60, 0.9); }
+}
+@keyframes hero-glow {
+  0%, 100% { filter: brightness(1) drop-shadow(0 0 2px rgba(255, 215, 106, 0.4)); }
+  50%      { filter: brightness(1.5) drop-shadow(0 0 14px rgba(255, 215, 106, 0.95)); }
+}
+.anim-redglow { animation: forge-redglow 0.9s ease-in-out infinite; }
+.anim-heroglow { animation: hero-glow 0.9s ease-in-out infinite; }
