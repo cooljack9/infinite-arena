@@ -1,0 +1,11 @@
+{
+  "_comment": "无限勇者竞技场 · 外部调参示例（MOD 化）。将本文件复制为 public/data/tuning.json 即可覆盖内置数值，无需改源码。所有字段均可选，省略即使用默认值。",
+  "scaling": {
+    "_comment": "无尽缩放曲线（scaling.ts）。20 层内线性；20 层后按 √(n/20) 的 expHp/expDmg 次幂增长（亚线性 = 边际递减）。",
+    "knee": 20,
+    "linHp": 0.08,
+    "linDmg": 0.06,
+    "expHp": 0.5,
+    "expDmg": 0.5
+  }
+}
