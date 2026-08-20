@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#14101a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="勇者竞技场" />
+    <link rel="icon" type="image/svg+xml" href="/infinite-arena/favicon.svg" />
+    <link rel="apple-touch-icon" href="/infinite-arena/apple-touch-icon.png" />
+    <link rel="manifest" href="/infinite-arena/manifest.webmanifest" />
+    <title>无限勇者竞技场</title>
+    <script type="module" crossorigin src="/infinite-arena/assets/main-CI70OWKz.js"></script>
+    <link rel="stylesheet" crossorigin href="/infinite-arena/assets/main-DfuZG6XQ.css">
+  </head>
+  <body>
+    <div id="boot-loader">
+      <div class="spinner"></div>
+      <h1>无限勇者竞技场</h1>
+      <p>正在加载游戏资源，请稍候…</p>
+    </div>
+    <!-- v2.4.4 触屏竖屏轻提示：仅在触屏且竖屏时由 CSS 显示，提示旋转横屏，不强制锁屏 -->
+    <div id="rotate-hint" aria-hidden="true">
+      <div class="rotate-hint__icon">📱↻</div>
+      <div class="rotate-hint__txt">建议横屏游玩以获得最佳体验</div>
+    </div>
+    <div id="root"></div>
+    <style>
+      #boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        background: #14101a;
+        color: #e8e6ef;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        transition: opacity 0.35s ease;
+        pointer-events: none;
+      }
+      #boot-loader.hidden { opacity: 0; }
+      #boot-loader .spinner {
+        width: 36px; height: 36px;
+        border: 3px solid rgba(255, 255, 255, 0.12);
+        border-top-color: #ffd76a;
+        border-radius: 50%;
+        animation: boot-spin 0.9s linear infinite;
+      }
+      @keyframes boot-spin { to { transform: rotate(360deg); } }
+      #boot-loader h1 { margin: 0; font-size: 22px; letter-spacing: 1px; font-weight: 700; }
+      #boot-loader p { margin: 0; font-size: 13px; color: #a7a4b5; }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2036"/>
+      <stop offset="1" stop-color="#140f1c"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe9a4"/>
+      <stop offset="0.6" stop-color="#ffd45f"/>
+      <stop offset="1" stop-color="#e6a92e"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bg)" stroke="#6a5580" stroke-width="2"/>
+  <!-- 竞技场：金盾 + 上扬尖峰（呼应 ▲ 我方阵营标记） -->
+  <path d="M32 12 L50 22 V36 C50 46 42 52 32 54 C22 52 14 46 14 36 V22 Z"
+        fill="url(#gold)" stroke="#fff0c4" stroke-width="1.5"/>
+  <path d="M32 22 L40 34 H34 L36 45 L24 33 H30 L28 22 Z" fill="#1a1410"/>
+</svg>
