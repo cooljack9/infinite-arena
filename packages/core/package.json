@@ -1,0 +1,26 @@
+{
+  "name": "@arena/core",
+  "version": "2.2.0",
+  "private": true,
+  "type": "module",
+  "description": "无限勇者竞技场 · 领域逻辑库（Pure Core）：零依赖、纯函数、无 IO。前端与 Supabase Edge Function 引用同一份。",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts",
+    "./contract": "./src/contract/index.ts",
+    "./rules": "./src/rules/index.ts",
+    "./engine/*": "./src/engine/*",
+    "./content/*": "./src/content/*",
+    "./gen/*": "./src/gen/*"
+  },
+  "files": ["src", "dist"],
+  "dependencies": {},
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  }
+}
