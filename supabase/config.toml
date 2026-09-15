@@ -1,0 +1,5 @@
+# Supabase 项目配置（部署时由 CLI 读取）
+project_id = "infinite-arena"
+
+[functions.game]
+verify_jwt = false   # 鉴权在函数内手写（支持 anon key 打 __parityBattle），JWT 层不拦截

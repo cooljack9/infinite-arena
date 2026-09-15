@@ -1,0 +1,36 @@
+node_modules/
+dist/
+dist-tmp/
+*.local
+.DS_Store
+.vite/
+.preview/
+dist-*/
+.cache-e2e/
+
+# Pure Core 构建产物（可重建，不入库；但 supabase/_shared/core.js 由 CI 强制入库存证）
+packages/core/dist/
+
+# Capacitor 安卓工程（CI 内由 npx cap add android 生成，不入库）
+android/
+
+# 本地执行/联调产物（不入库）
+__*.txt
+.workbuddy/
+
+# 环境变量 / 密钥（部署经 CI secrets 注入，不入库）
+.env
+.env.*
+.env.local
+
+# 解包/复制产生的无害嵌套副本（safe-delete 保护阻止删除，仅排除不入库）
+/infinite-arena/
+
+# 调试/性能探针脚本（本地剖析用，非项目资产）
+scripts/_perf-*.mjs
+
+# Vite/Vitest 按需编译缓存（运行时生成）
+*.timestamp-*.mjs
+
+# Edge 构建 sourcemap（可重建，不入库）
+supabase/functions/_shared/core.js.map

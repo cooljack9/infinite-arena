@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>确定性自检 · 本机 vs 服务端</title>
+    <style>
+      body { margin: 0; background: #0d0b12; color: #cfc8d8;
+             font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; padding: 16px; }
+      h2 { font-size: 15px; margin: 18px 0 8px; color: #b98cff; }
+      table { border-collapse: collapse; width: 100%; max-width: 760px; }
+      td { padding: 5px 10px 5px 0; border-bottom: 1px solid #241c33; vertical-align: top; }
+      td:first-child { color: #8f88a0; white-space: nowrap; }
+      code { color: #cfc8d8; word-break: break-all; }
+      .ok { color: #6ee7a8; }
+      .bad { color: #ff7b72; }
+      .warn { color: #e3b341; }   /* 对照组差异：预期内，不是故障 */
+      .dim { color: #6b6480; max-width: 760px; }
+      b { color: #cfc8d8; }
+    </style>
+  </head>
+  <body>
+    <div id="root">正在加载…</div>
+    <script type="module" src="/src/dev/selfcheck.ts"></script>
+  </body>
+</html>
