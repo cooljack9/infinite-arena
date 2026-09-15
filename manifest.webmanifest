@@ -1,0 +1,17 @@
+{
+  "name": "无限勇者竞技场",
+  "short_name": "勇者竞技场",
+  "description": "三人起队、七人满编，挑战无尽层竞技场。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#14101a",
+  "theme_color": "#14101a",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
