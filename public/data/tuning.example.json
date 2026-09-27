@@ -1,0 +1,23 @@
+{
+  "_comment": "无限勇者竞技场 · 外部调参示例（MOD 化）。将本文件复制为 public/data/tuning.json 即可覆盖内置数值，无需改源码。所有字段均可选，省略即使用默认值。",
+  "scaling": {
+    "_comment": "无尽缩放曲线（scaling.ts）。20 层内线性；20 层后按 √(n/20) 的 expHp/expDmg 次幂增长（亚线性 = 边际递减）。",
+    "knee": 20,
+    "linHp": 0.08,
+    "linDmg": 0.06,
+    "expHp": 0.5,
+    "expDmg": 0.5
+  },
+  "enemyFocus": {
+    "_comment": "反堆一人·敌方针对最强（coherence.ts）。三重节流保证「不每关都出」：①onsetFloor 前 7 层完全无；②applyChance 每层只有约 1/5 敌人带标记；③max*PerBattle 每场上限。最关键的第四重是集中度闸门 gateLow/gateHigh：均衡队闸门=0，两条被动对他们等于不存在，只有堆一人的队伍才会遇到。",
+    "onsetFloor": 8,
+    "applyChance": 0.18,
+    "frontMutualP": 0.30,
+    "backShackleP": 0.40,
+    "backShackleT": 8,
+    "maxFrontPerBattle": 2,
+    "maxBackPerBattle": 1,
+    "gateLow": 1.25,
+    "gateHigh": 1.6
+  }
+}

@@ -1,0 +1,148 @@
+# 08 · 交付产物验证清单（Deliverable Verification）
+
+> 本文件是本次「前后端分离改造」交付物的**权威清单 + 验收记录**。
+> 它随交付包一起发布，任何拿到压缩包的人都能据此逐项复验。
+> 配套交付包命名：`infinite-arena-v2.0.0.zip`
+
+---
+
+## 0. 版本锚定（最重要的一行）
+
+| 项 | 值 | 含义 |
+|---|---|---|
+| 游戏代码版本 | `v2.0.0` | 全仓唯一版本号（README / package.json / 全部文档一致） |
+| **core 回放契约版本（CORE_VERSION）** | **`2.0.0`** | 与发布版本号**同一个号**；前后端「同一 `battleSeed` 必出同一结果」的契约版本 |
+| 本次变更性质 | **回放不兼容（破坏性）** | detmath 替换 sin/cos/atan2/pow，约 25% 输入差 1 ULP，足以翻转索敌比较 |
+
+自 **v2.0.0** 起 `coreVersion` **与发布版本号统一为同一个号**（单一版本轴）。
+回放兼容性判断标准不变：只要「同一个 `battleSeed` 会算出不同结果」（引擎数学、RNG 消费顺序、
+平衡数值变更）就必须升号；纯渲染 / UI / 音效改动不改变 checksum，但**版本号仍随整包统一递增**。
+
+> ⚠ 凡 `coreVersion` ≠ `2.0.0` 的客户端、存档与 replay，与本包产物**一律不可混用**（回放会漂）。
+> 版本号由 `4.2.0-van` 回退到 `2.0.0` 属**破坏性收敛**，升级必须清库或强制客户端刷新。
+
+---
+
+## 1. 交付物清单
+
+| 类别 | 路径 | 说明 |
+|---|---|---|
+| 生产构建 | `dist/` | Vite 构建产物，`CORE_VERSION` 已烘焙进 `main-*.js` |
+| ├ 入口 | `dist/index.html` | 静态站点入口 |
+| ├ 资源 | `dist/assets/main-DODdESU8.js`（387.88 KB / gzip 135.49 KB） | 含确定性引擎 + detmath |
+| ├ 资源 | `dist/assets/main-CRuAMbnU.css`（9.97 KB） | 样式 |
+| └ 调参样例 | `dist/data/tuning.example.json` | 平衡数值样例 |
+| 架构文档 | `docs/backend/01~07_*.md` | 架构总览 / 接口契约 / 数据库 / 倒计时时序 / 实施路线 / PoC 报告 / 跨引擎浮点 |
+| **本清单** | `docs/backend/08_交付产物验证清单.md` | 即本文件 |
+| 确定性数学库 | `src/game/engine/detmath.ts` | 只用 ES 第一档运算重写 sin/cos/pow/atan2 |
+| 静态闸门 | `scripts/guard-determinism.mjs` | 禁止 headless 层使用 implementation-approximated 数学 |
+| 跨运行时探针 | `scripts/cross-runtime.ts` | Node/Deno/浏览器 A/B 2 万点采样 |
+| 后端 PoC | `scripts/backend-poc.ts` | 10 局 / 80 场全链路验证 |
+| 双通路后端 | `src/backend/GameBackend.ts` + `LocalBackend` / `RemoteBackend`（骨架） | 本地可测；Remote 待接 Supabase |
+| 浏览器自检页 | `src/dev/selfcheck.ts` + `selfcheck.html` | 真机浮点一致性自检（仅展示对照组，不误判） |
+| 源码其余 | `src/` `public/` `scripts/` `*.ts` `*.json` `*.html` | 完整可构建工程 |
+
+**不纳入压缩包**：`node_modules/`（约 200MB+，按需 `npm install`）、`*.log`、`/root/.codebuddy` 临时件。
+
+---
+
+## 2. 验证矩阵（复验命令见各节）
+
+### 2.1 本地六道闸门 `npm run verify`
+
+| 闸门 | 命令 | 结果 |
+|---|---|---|
+| 类型检查 | `npm run typecheck` | ✅ |
+| 模板校验 | `node scripts/check-templates.mjs` | ✅ |
+| 确定性闸门 | `npm run guard` | ✅ 无第二档 Math 泄漏 |
+| 冒烟测试 | `npm run smoke` | ✅ |
+| 集成测试 | `npm run integration` | ✅ |
+| 后端 PoC | `npm run backend` | ✅ **21/21** |
+
+### 2.2 单元测试 `npm run test`（vitest）
+
+| 项 | 结果 |
+|---|---|
+| 全部用例 | ✅ **17/17** |
+
+### 2.3 后端权威结算 PoC `npm run backend`
+
+| 指标 | 实测 |
+|---|---|
+| 样本 | **10 局 / 80 场战斗**（novice + normal，1–15 层） |
+| 胜率 | 69% |
+| 后端结算均值 | **15.11 ms/场**（样本相关，长局含 Boss 分身/龙息会更长） |
+| tick 数全等 | **80 / 80** |
+| checksum bit 级全等 | **80 / 80** |
+| 同种子跨后端实例 | 一致（可复现 = 可申诉 / 可回放 / 可反作弊） |
+
+### 2.4 跨 JS 运行时一致性 `scripts/cross-runtime.ts`
+
+| 运行时 | V8 版本 | 战斗指纹 | 36× checksum |
+|---|---|---|---|
+| Node 22.13 | V8 12.4 | `-122f581e` | **逐 bit 全等** |
+| Deno 2.9.5 | V8 15.0 | `-122f581e` | **逐 bit 全等** |
+
+> 关键结论：即便同是 V8，12.4 与 15.0 在 6 个超越函数上**全不同**；
+> 但走 detmath 后两者**完全一致**——证明「根除演算路径上的不确定函数」而非「挑运行时」是对的。
+
+### 2.5 五浏览器/运行时 selfcheck（真机）
+
+| 运行时 | 实验组（战斗指纹 + detmath 摘要） | 结论 |
+|---|---|---|
+| Chromium 151 | `-122f581e` + det 全绿 | ✅ |
+| Firefox 153 | `-122f581e` + det 全绿 | ✅ |
+| WebKit 26.5 | `-122f581e` + det 全绿 | ✅ |
+| Node 22.13 | 同上 | ✅ |
+| Deno 2.9.5 | 同上 | ✅ |
+
+对照组（原生 `Math.*`）按设计**只展示不判定**，并附「跨 V8 大版本即漂」的参照说明——
+它印证了风险定级，而非用于判定玩家环境是否「合规」。
+
+---
+
+## 3. 复验步骤（拿到压缩包后）
+
+```bash
+# 1) 解包
+unzip infinite-arena-v2.0.0.zip -d infinite-arena
+cd infinite-arena
+
+# 2) 装依赖（压缩包不含 node_modules）
+npm install
+
+# 3) 全量闸门 + 单测（应全绿）
+npm run verify && npm run test
+
+# 4) 跨运行时核对（Node 与 Deno 指纹必须同为 -122f581e，36 checksum 全等）
+#    Deno 安装见 https://deno.com/manual/getting_started/installation
+npx esbuild scripts/cross-runtime.ts --bundle --platform=neutral --format=esm \
+  --outfile=node_modules/.cache/xrt.mjs --log-level=error
+node node_modules/.cache/xrt.mjs
+deno run --allow-read node_modules/.cache/xrt.mjs
+
+# 5) 浏览器自检：用任意静态服务器打开 selfcheck.html，实验组须全绿
+npm run build && npm run preview   # 或 python3 -m http.server 服务于 dist/
+```
+
+---
+
+## 4. 已知待办（不在本包交付范围）
+
+| 项 | 状态 | 说明 |
+|---|---|---|
+| `RemoteBackend` Supabase Edge Function | ⬜ 骨架在，未实现 | 接口契约/数据库设计已就绪 |
+| `upgradeHero` 规则抽进 `rules.ts` | ⬜ LocalBackend 仍占位 | 升星规则待下沉 |
+| 真实 Postgres / RLS | ⬜ 当前 `MemoryStore` | 乐观锁并发未验 |
+| 前端 `BattleScreen` 接 `getBackend()` | ⬜ 双通路入口已建，未接入「放映机」模式 | 端到端链路未通 |
+| `ackBattle` checksum 仅作遥测 | ⬜ 文档纪律已写死，代码未落地 | 实现时盯住「绝不判作弊」 |
+| CI 跑三引擎 selfcheck | ⬜ 现靠本地 playwright 手动 | 建议入 CI |
+| 移动端真机（iOS Safari） | ⬜ 与桌面 WebKit 未必同版本 | 上线前补验 |
+
+---
+
+## 5. 交付包哈希（打包后由脚本回填）
+
+| 文件 | SHA-256 |
+|---|---|
+| `infinite-arena-v3.1.0-backend-detmath.zip` | `19be672158fc428e1237c5b2adb78acc2671f953011be16ff65ae4ce03fd9628`（*剔除本清单文件后的归档 SHA-256*） |
